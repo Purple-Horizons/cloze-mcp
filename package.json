@@ -1,6 +1,6 @@
 {
   "name": "@purplehorizons/cloze-mcp",
-  "version": "0.1.0",
+  "version": "0.1.0-beta.1",
   "description": "Open-source MCP server for Cloze CRM - give AI agents access to your contacts, companies, and deals",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

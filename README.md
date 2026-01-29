@@ -3,6 +3,8 @@
 [![npm version](https://badge.fury.io/js/%40purplehorizons%2Fcloze-mcp.svg)](https://www.npmjs.com/package/@purplehorizons/cloze-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+> ⚠️ **BETA / UNTESTED** — This is an early release. Use at your own risk. API may change. Contributions and bug reports welcome!
+
 An open-source [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server for [Cloze CRM](https://www.cloze.com/). Give AI agents like Claude access to your contacts, companies, deals, and communications.
 
 ## Features
