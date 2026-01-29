@@ -1,0 +1,50 @@
+{
+  "name": "@purplehorizons/cloze-mcp",
+  "version": "0.1.0",
+  "description": "Open-source MCP server for Cloze CRM - give AI agents access to your contacts, companies, and deals",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "cloze-mcp": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts --clean",
+    "dev": "tsup src/index.ts --format esm --watch",
+    "start": "node dist/index.js",
+    "lint": "eslint src/",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "cloze",
+    "crm",
+    "ai",
+    "claude",
+    "model-context-protocol"
+  ],
+  "author": "Purple Horizons <hello@purplehorizons.io>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Purple-Horizons/cloze-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Purple-Horizons/cloze-mcp/issues"
+  },
+  "homepage": "https://github.com/Purple-Horizons/cloze-mcp#readme",
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0"
+  }
+}
