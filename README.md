@@ -5,14 +5,16 @@
 
 > ⚠️ **BETA / UNTESTED** — This is an early release. Use at your own risk. API may change. Contributions and bug reports welcome!
 
-An open-source [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server for [Cloze CRM](https://www.cloze.com/). Give AI agents like Claude access to your contacts, companies, deals, and communications.
+An open-source [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server for [Cloze CRM](https://www.cloze.com/). Give AI agents like Claude access to your contacts, companies, deals, metadata, and timeline.
 
 ## Features
 
-- 🔍 **Search & Retrieve** — Find people, companies, and projects in your CRM
-- 📞 **Contact Info** — Get emails, phone numbers, addresses on demand
-- 📊 **Deal Pipeline** — Query projects and deals by stage
+- 🔍 **Search & Retrieve** — Find people, companies, and projects (basic + advanced filters + feeds)
+- 🧠 **Metadata Insight** — Fetch stages, segments, steps, custom fields, team members/roles, and saved views
+- 📝 **Timeline Writes** — Create To-Dos and log communications directly from agents
+- 📊 **Deal Pipeline** — Query projects and deals by stage and scope
 - 🔒 **Secure** — Your API key stays local, never sent to third parties
+- ✅ **Tested** — Vitest unit tests cover tool routing + validation (run `npm test`)
 
 ## Quick Start
 
@@ -57,22 +59,46 @@ Go to [Cloze Settings → API](https://www.cloze.com/app/settings/api) and creat
 ### 3. Start using it
 
 Ask your AI assistant things like:
-- "What's John Smith's phone number?"
-- "Find all contacts at Acme Corp"
-- "Show me my deals closing this month"
-- "Look up the company info for example.com"
+- "Show me all buyers in the Future stage assigned to Collette"
+- "List the pipeline steps for the Project segment"
+- "Create a reminder to call Sabor Havana tomorrow"
+- "Stream the latest company changes since last week"
 
 ## Available Tools
 
+### Core lookups
 | Tool | Description |
 |------|-------------|
-| `cloze_find_people` | Search for contacts by name, email, or phone |
-| `cloze_get_person` | Get full details for a specific person |
-| `cloze_find_companies` | Search for companies by name or domain |
-| `cloze_get_company` | Get full details for a specific company |
-| `cloze_find_projects` | Search for projects/deals by name |
-| `cloze_get_project` | Get full details for a specific project |
-| `cloze_get_profile` | Get your Cloze user profile |
+| `cloze_find_people`, `cloze_get_person` | Basic contact search + detail
+| `cloze_find_companies`, `cloze_get_company` | Company search + detail
+| `cloze_find_projects`, `cloze_get_project` | Project/deal search + detail
+| `cloze_get_profile` | Verify API connectivity / user info
+
+### Metadata / taxonomy
+| Tool | Description |
+|------|-------------|
+| `cloze_get_custom_fields` | List custom fields (optionally by relation type)
+| `cloze_get_people_stages`, `cloze_get_project_stages` | Stage taxonomies
+| `cloze_get_people_segments`, `cloze_get_company_segments`, `cloze_get_project_segments` | Segment lists
+| `cloze_get_steps` | Pipeline steps (filter by segment/stage)
+| `cloze_get_views` | Saved views / audiences
+| `cloze_list_team_members`, `cloze_list_team_roles` | Team roster + role labels
+
+### Advanced find + feeds
+| Tool | Description |
+|------|-------------|
+| `cloze_people_find_advanced` | GET /v1/people/find with pagination, filters, sorting
+| `cloze_companies_find_advanced` | Same for companies
+| `cloze_projects_find_advanced` | Same for projects/deals
+| `cloze_people_feed` | Cursor-based change feed for people (supports modifiedAfter, includeAuditedChanges)
+| `cloze_companies_feed` | Company feed
+| `cloze_projects_feed` | Project feed
+
+### Timeline writes
+| Tool | Description |
+|------|-------------|
+| `cloze_create_todo` | Create a Cloze To-Do/reminder (subject + optional when/participants/assignee)
+| `cloze_log_communication` | Log calls, texts, emails, meetings, etc. onto the timeline
 
 ## Development
 
@@ -84,10 +110,13 @@ cd cloze-mcp
 # Install dependencies
 npm install
 
+# Run tests
+npm test
+
 # Build
 npm run build
 
-# Run locally
+# Run locally (after build)
 CLOZE_API_KEY=your-key node dist/index.js
 ```
 
@@ -99,8 +128,10 @@ CLOZE_API_KEY=your-key node dist/index.js
 
 ## Roadmap
 
-- [x] MVP: Read-only tools (find, get)
-- [ ] Write operations (create contacts, log communications)
+- [x] MVP: Read operations (find/get)
+- [x] Metadata helpers (stages, segments, custom fields, steps, team)
+- [x] Advanced search + feeds
+- [x] Timeline writes (todos + communications)
 - [ ] Analytics queries
 - [ ] Webhook subscriptions
 - [ ] OAuth 2.0 for public integrations

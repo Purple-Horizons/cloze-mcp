@@ -20,6 +20,17 @@ export class ClozeClient {
     this.apiKey = apiKey;
   }
 
+  private buildQuery(params?: Record<string, string | number | boolean | undefined>) {
+    if (!params) return "";
+    const search = new URLSearchParams();
+    for (const [key, value] of Object.entries(params)) {
+      if (value === undefined || value === null) continue;
+      search.set(key, String(value));
+    }
+    const qs = search.toString();
+    return qs ? `?${qs}` : "";
+  }
+
   private async request<T>(
     method: "GET" | "POST",
     endpoint: string,
@@ -47,8 +58,8 @@ export class ClozeClient {
 
     const data = await response.json();
 
-    if (data.errorcode) {
-      throw new Error(`Cloze API error: ${data.errorcode} - ${data.message}`);
+    if (data.errorcode && data.errorcode !== 0) {
+      throw new Error(`Cloze API error: ${data.errorcode} - ${data.message ?? "Unknown"}`);
     }
 
     return data as T;
@@ -61,6 +72,33 @@ export class ClozeClient {
       query,
       limit,
     });
+  }
+
+  async findPeopleAdvanced(params: Record<string, unknown>): Promise<unknown> {
+    const query = this.buildQuery({
+      pagesize: params.pageSize as number | undefined,
+      pagenumber: params.pageNumber as number | undefined,
+      freeformquery: params.query as string | undefined,
+      stage: params.stage as string | undefined,
+      segment: params.segment as string | undefined,
+      assignee: params.assignee as string | undefined,
+      assigned: params.assigned as boolean | undefined,
+      sort: params.sort as string | undefined,
+    });
+    return this.request("GET", `/v1/people/find${query}`);
+  }
+
+  async feedPeople(params: Record<string, unknown>): Promise<unknown> {
+    const query = this.buildQuery({
+      cursor: params.cursor as string | undefined,
+      stage: params.stage as string | undefined,
+      segment: params.segment as string | undefined,
+      scope: params.scope as string | undefined,
+      pagesize: params.pageSize as number | undefined,
+      modifiedafter: params.modifiedAfter as string | number | undefined,
+      includeauditedchanges: params.includeAuditedChanges as boolean | undefined,
+    });
+    return this.request("GET", `/v1/people/feed${query}`);
   }
 
   async getPerson(id: string): Promise<unknown> {
@@ -84,6 +122,33 @@ export class ClozeClient {
     });
   }
 
+  async findCompaniesAdvanced(params: Record<string, unknown>): Promise<unknown> {
+    const query = this.buildQuery({
+      pagesize: params.pageSize as number | undefined,
+      pagenumber: params.pageNumber as number | undefined,
+      freeformquery: params.query as string | undefined,
+      stage: params.stage as string | undefined,
+      segment: params.segment as string | undefined,
+      assignee: params.assignee as string | undefined,
+      assigned: params.assigned as boolean | undefined,
+      sort: params.sort as string | undefined,
+    });
+    return this.request("GET", `/v1/companies/find${query}`);
+  }
+
+  async feedCompanies(params: Record<string, unknown>): Promise<unknown> {
+    const query = this.buildQuery({
+      cursor: params.cursor as string | undefined,
+      stage: params.stage as string | undefined,
+      segment: params.segment as string | undefined,
+      scope: params.scope as string | undefined,
+      pagesize: params.pageSize as number | undefined,
+      modifiedafter: params.modifiedAfter as string | number | undefined,
+      includeauditedchanges: params.includeAuditedChanges as boolean | undefined,
+    });
+    return this.request("GET", `/v1/companies/feed${query}`);
+  }
+
   async getCompany(id: string): Promise<unknown> {
     return this.request("POST", "/v1/companies/get", {
       id,
@@ -103,6 +168,33 @@ export class ClozeClient {
       query,
       limit,
     });
+  }
+
+  async findProjectsAdvanced(params: Record<string, unknown>): Promise<unknown> {
+    const query = this.buildQuery({
+      pagesize: params.pageSize as number | undefined,
+      pagenumber: params.pageNumber as number | undefined,
+      freeformquery: params.query as string | undefined,
+      stage: params.stage as string | undefined,
+      segment: params.segment as string | undefined,
+      assignee: params.assignee as string | undefined,
+      assigned: params.assigned as boolean | undefined,
+      sort: params.sort as string | undefined,
+    });
+    return this.request("GET", `/v1/projects/find${query}`);
+  }
+
+  async feedProjects(params: Record<string, unknown>): Promise<unknown> {
+    const query = this.buildQuery({
+      cursor: params.cursor as string | undefined,
+      stage: params.stage as string | undefined,
+      segment: params.segment as string | undefined,
+      scope: params.scope as string | undefined,
+      pagesize: params.pageSize as number | undefined,
+      modifiedafter: params.modifiedAfter as string | number | undefined,
+      includeauditedchanges: params.includeAuditedChanges as boolean | undefined,
+    });
+    return this.request("GET", `/v1/projects/feed${query}`);
   }
 
   async getProject(id: string): Promise<unknown> {
@@ -130,5 +222,45 @@ export class ClozeClient {
 
   async getProjectStages(): Promise<unknown> {
     return this.request("GET", "/v1/user/stages/projects");
+  }
+
+  async getPeopleSegments(): Promise<unknown> {
+    return this.request("GET", "/v1/user/segments/people");
+  }
+
+  async getCompanySegments(): Promise<unknown> {
+    return this.request("GET", "/v1/user/segments/companies");
+  }
+
+  async getProjectSegments(): Promise<unknown> {
+    return this.request("GET", "/v1/user/segments/projects");
+  }
+
+  async getSteps(params?: { segment?: string; stage?: string }): Promise<unknown> {
+    const query = this.buildQuery({
+      segment: params?.segment,
+      stage: params?.stage,
+    });
+    return this.request("GET", `/v1/user/steps${query}`);
+  }
+
+  async getViews(): Promise<unknown> {
+    return this.request("GET", "/v1/user/views");
+  }
+
+  async listTeamMembers(): Promise<unknown> {
+    return this.request("GET", "/v1/team/members/list");
+  }
+
+  async listTeamRoles(): Promise<unknown> {
+    return this.request("GET", "/v1/team/roles");
+  }
+
+  async createTodo(todo: Record<string, unknown>): Promise<unknown> {
+    return this.request("POST", "/v1/timeline/todo/create", todo);
+  }
+
+  async logCommunication(payload: Record<string, unknown>): Promise<unknown> {
+    return this.request("POST", "/v1/timeline/communication/create", payload);
   }
 }
