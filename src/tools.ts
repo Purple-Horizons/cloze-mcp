@@ -429,11 +429,24 @@ export const tools: Tool[] = [
 
 // ==================== Tool Handlers ====================
 
+// Workaround: mcporter passes args as {"{\"key\"": "\"value\""} instead of {key: value}
+function fixArgs(raw: Record<string, unknown>): Record<string, unknown> {
+  const keys = Object.keys(raw);
+  if (keys.length > 0 && keys[0].startsWith('{')) {
+    try {
+      const rebuilt = keys.map((k, i) => k + ':' + Object.values(raw)[i]).join(',');
+      return JSON.parse(rebuilt);
+    } catch { return raw; }
+  }
+  return raw;
+}
+
 export async function handleToolCall(
   client: ClozeClient,
   toolName: string,
   args: Record<string, unknown>
 ): Promise<unknown> {
+  args = fixArgs(args);
   switch (toolName) {
     case "cloze_find_people": {
       const query = args.query as string;
