@@ -68,7 +68,7 @@ export class ClozeClient {
   // ==================== People ====================
 
   async findPeople(query: string, limit = 10): Promise<unknown> {
-    const qs = this.buildQuery({ query, limit });
+    const qs = this.buildQuery({ freeformquery: query, pagesize: limit });
     return this.request("GET", `/v1/people/find${qs}`);
   }
 
@@ -114,7 +114,7 @@ export class ClozeClient {
   // ==================== Companies ====================
 
   async findCompanies(query: string, limit = 10): Promise<unknown> {
-    const qs = this.buildQuery({ query, limit });
+    const qs = this.buildQuery({ freeformquery: query, pagesize: limit });
     return this.request("GET", `/v1/companies/find${qs}`);
   }
 
@@ -160,7 +160,7 @@ export class ClozeClient {
   // ==================== Projects ====================
 
   async findProjects(query: string, limit = 10): Promise<unknown> {
-    const qs = this.buildQuery({ query, limit });
+    const qs = this.buildQuery({ freeformquery: query, pagesize: limit });
     return this.request("GET", `/v1/projects/find${qs}`);
   }
 
