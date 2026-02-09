@@ -111,6 +111,10 @@ export class ClozeClient {
     });
   }
 
+  async updatePerson(params: Record<string, unknown>): Promise<unknown> {
+    return this.request("POST", "/v1/people/update", params);
+  }
+
   // ==================== Companies ====================
 
   async findCompanies(query: string, limit = 10): Promise<unknown> {

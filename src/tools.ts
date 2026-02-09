@@ -305,6 +305,53 @@ export const tools: Tool[] = [
     },
   },
   {
+    name: "cloze_update_person",
+    description:
+      "Update an existing person in Cloze. Can change visibility (hidden to clean up duplicates), stage, segment, step, job title, company, or add/update emails, phones, and addresses. Requires at least a name (first+last) or email as identifier.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        id: { type: "string", description: "Cloze syncKey/ID of the person." },
+        first: { type: "string", description: "First name (used as identifier)." },
+        last: { type: "string", description: "Last name (used as identifier)." },
+        emails: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              value: { type: "string" },
+              work: { type: "boolean" },
+            },
+            required: ["value"],
+          },
+          description: "Email addresses.",
+        },
+        phones: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              value: { type: "string" },
+              mobile: { type: "boolean" },
+            },
+            required: ["value"],
+          },
+          description: "Phone numbers.",
+        },
+        visibility: {
+          type: "string",
+          enum: ["visible", "hidden"],
+          description: "Set to 'hidden' to soft-delete/hide a duplicate.",
+        },
+        stage: { type: "string", description: "Stage key (lead, future, current, past, out)." },
+        segment: { type: "string", description: "Segment label or id." },
+        step: { type: "string", description: "Pipeline step." },
+        jobtitle: { type: "string", description: "Job title." },
+        company: { type: "string", description: "Company name." },
+      },
+    },
+  },
+  {
     name: "cloze_create_todo",
     description: "Create a Cloze To-Do/reminder on the timeline.",
     inputSchema: {
@@ -507,6 +554,10 @@ export async function handleToolCall(
 
     case "cloze_projects_feed": {
       return client.feedProjects(args);
+    }
+
+    case "cloze_update_person": {
+      return client.updatePerson(args);
     }
 
     case "cloze_create_todo": {
