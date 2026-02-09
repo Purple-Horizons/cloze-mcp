@@ -68,10 +68,8 @@ export class ClozeClient {
   // ==================== People ====================
 
   async findPeople(query: string, limit = 10): Promise<unknown> {
-    return this.request("POST", "/v1/people/find", {
-      query,
-      limit,
-    });
+    const qs = this.buildQuery({ query, limit });
+    return this.request("GET", `/v1/people/find${qs}`);
   }
 
   async findPeopleAdvanced(params: Record<string, unknown>): Promise<unknown> {
@@ -116,10 +114,8 @@ export class ClozeClient {
   // ==================== Companies ====================
 
   async findCompanies(query: string, limit = 10): Promise<unknown> {
-    return this.request("POST", "/v1/companies/find", {
-      query,
-      limit,
-    });
+    const qs = this.buildQuery({ query, limit });
+    return this.request("GET", `/v1/companies/find${qs}`);
   }
 
   async findCompaniesAdvanced(params: Record<string, unknown>): Promise<unknown> {
@@ -164,10 +160,8 @@ export class ClozeClient {
   // ==================== Projects ====================
 
   async findProjects(query: string, limit = 10): Promise<unknown> {
-    return this.request("POST", "/v1/projects/find", {
-      query,
-      limit,
-    });
+    const qs = this.buildQuery({ query, limit });
+    return this.request("GET", `/v1/projects/find${qs}`);
   }
 
   async findProjectsAdvanced(params: Record<string, unknown>): Promise<unknown> {
